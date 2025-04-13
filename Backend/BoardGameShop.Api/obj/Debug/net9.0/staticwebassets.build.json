@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "OEh+raL2I5GFCF3X6oXr9zgqD9ynzxu+buOLXK/YRz8=",
+  "Source": "BoardGameShop.Api",
+  "BasePath": "_content/BoardGameShop.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

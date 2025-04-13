@@ -1,0 +1,199 @@
+2025-04-13 21:36:37.683 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE DATABASE `BoardGameShop`;
+2025-04-13 21:36:37.775 +07:00 [INF] Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `__EFMigrationsHistory` (
+    `MigrationId` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
+    `ProductVersion` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
+    CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:36:37.790 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='BoardGameShop' AND TABLE_NAME='__EFMigrationsHistory';
+2025-04-13 21:36:37.815 +07:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `MigrationId`, `ProductVersion`
+FROM `__EFMigrationsHistory`
+ORDER BY `MigrationId`;
+2025-04-13 21:36:37.822 +07:00 [INF] Applying migration '20250413143628_InitialCreate'.
+2025-04-13 21:40:47.870 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='BoardGameShop' AND TABLE_NAME='__EFMigrationsHistory';
+2025-04-13 21:40:47.905 +07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='BoardGameShop' AND TABLE_NAME='__EFMigrationsHistory';
+2025-04-13 21:40:47.918 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `MigrationId`, `ProductVersion`
+FROM `__EFMigrationsHistory`
+ORDER BY `MigrationId`;
+2025-04-13 21:40:47.927 +07:00 [INF] Applying migration '20250413144041_InitialCreate'.
+2025-04-13 21:40:47.973 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER DATABASE CHARACTER SET utf8mb4;
+2025-04-13 21:40:47.978 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `Categories` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `Name` varchar(50) CHARACTER SET utf8mb4 NULL,
+    `Slug` varchar(50) CHARACTER SET utf8mb4 NULL,
+    `Description` varchar(255) CHARACTER SET utf8mb4 NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    `UpdatedAt` datetime(6) NULL,
+    CONSTRAINT `PK_Categories` PRIMARY KEY (`Id`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:47.984 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `Coupons` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `Code` longtext CHARACTER SET utf8mb4 NULL,
+    `DiscountType` longtext CHARACTER SET utf8mb4 NULL,
+    `DiscountValue` decimal(65,30) NOT NULL,
+    `MinOrderAmount` decimal(65,30) NULL,
+    `MaxUses` int NULL,
+    `CurrentUses` int NOT NULL,
+    `StartDate` datetime(6) NULL,
+    `EndDate` datetime(6) NULL,
+    `IsActive` tinyint(1) NOT NULL,
+    CONSTRAINT `PK_Coupons` PRIMARY KEY (`Id`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:47.988 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `Users` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `Username` varchar(50) CHARACTER SET utf8mb4 NULL,
+    `PasswordHash` longtext CHARACTER SET utf8mb4 NULL,
+    `Email` varchar(100) CHARACTER SET utf8mb4 NULL,
+    `FullName` varchar(100) CHARACTER SET utf8mb4 NULL,
+    `Phone` varchar(20) CHARACTER SET utf8mb4 NULL,
+    `Address` varchar(255) CHARACTER SET utf8mb4 NULL,
+    `Role` varchar(20) CHARACTER SET utf8mb4 NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    CONSTRAINT `PK_Users` PRIMARY KEY (`Id`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:47.996 +07:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `Products` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `Name` varchar(100) CHARACTER SET utf8mb4 NULL,
+    `Slug` varchar(100) CHARACTER SET utf8mb4 NULL,
+    `Description` varchar(1000) CHARACTER SET utf8mb4 NULL,
+    `Price` decimal(65,30) NOT NULL,
+    `OriginalPrice` decimal(65,30) NULL,
+    `StockQuantity` int NOT NULL,
+    `CategoryId` int NOT NULL,
+    `ImageUrl` varchar(255) CHARACTER SET utf8mb4 NULL,
+    `MetaTitle` varchar(100) CHARACTER SET utf8mb4 NULL,
+    `MetaDescription` varchar(160) CHARACTER SET utf8mb4 NULL,
+    `IsActive` tinyint(1) NOT NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    `UpdatedAt` datetime(6) NULL,
+    CONSTRAINT `PK_Products` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_Products_Categories_CategoryId` FOREIGN KEY (`CategoryId`) REFERENCES `Categories` (`Id`) ON DELETE CASCADE
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:48.002 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `Orders` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `CustomerId` int NULL,
+    `CustomerName` varchar(100) CHARACTER SET utf8mb4 NULL,
+    `CustomerPhone` varchar(20) CHARACTER SET utf8mb4 NULL,
+    `CustomerAddress` varchar(255) CHARACTER SET utf8mb4 NULL,
+    `TotalAmount` decimal(65,30) NOT NULL,
+    `DiscountAmount` decimal(65,30) NOT NULL,
+    `FinalAmount` decimal(65,30) NOT NULL,
+    `OrderStatus` varchar(50) CHARACTER SET utf8mb4 NULL,
+    `PaymentMethod` varchar(50) CHARACTER SET utf8mb4 NULL,
+    `CouponCode` varchar(20) CHARACTER SET utf8mb4 NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    `UpdatedAt` datetime(6) NULL,
+    CONSTRAINT `PK_Orders` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_Orders_Users_CustomerId` FOREIGN KEY (`CustomerId`) REFERENCES `Users` (`Id`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:48.008 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `CartItems` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `SessionId` longtext CHARACTER SET utf8mb4 NULL,
+    `CustomerId` int NULL,
+    `ProductId` int NOT NULL,
+    `Quantity` int NOT NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    `UpdatedAt` datetime(6) NULL,
+    CONSTRAINT `PK_CartItems` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_CartItems_Products_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_CartItems_Users_CustomerId` FOREIGN KEY (`CustomerId`) REFERENCES `Users` (`Id`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:48.013 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `ProductImages` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `ProductId` int NOT NULL,
+    `ImageUrl` longtext CHARACTER SET utf8mb4 NULL,
+    `IsMain` tinyint(1) NOT NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    CONSTRAINT `PK_ProductImages` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_ProductImages_Products_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE CASCADE
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:48.019 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `Reviews` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `ProductId` int NOT NULL,
+    `CustomerId` int NULL,
+    `CustomerName` longtext CHARACTER SET utf8mb4 NULL,
+    `Rating` int NOT NULL,
+    `Comment` longtext CHARACTER SET utf8mb4 NULL,
+    `IsApproved` tinyint(1) NOT NULL,
+    `CreatedAt` datetime(6) NOT NULL,
+    CONSTRAINT `PK_Reviews` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_Reviews_Products_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_Reviews_Users_CustomerId` FOREIGN KEY (`CustomerId`) REFERENCES `Users` (`Id`)
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:48.025 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE `OrderItems` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `OrderId` int NOT NULL,
+    `ProductId` int NOT NULL,
+    `ProductName` longtext CHARACTER SET utf8mb4 NULL,
+    `Quantity` int NOT NULL,
+    `UnitPrice` decimal(65,30) NOT NULL,
+    `Subtotal` decimal(65,30) NOT NULL,
+    CONSTRAINT `PK_OrderItems` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_OrderItems_Orders_OrderId` FOREIGN KEY (`OrderId`) REFERENCES `Orders` (`Id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_OrderItems_Products_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE CASCADE
+) CHARACTER SET=utf8mb4;
+2025-04-13 21:40:48.036 +07:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_CartItems_CustomerId` ON `CartItems` (`CustomerId`);
+2025-04-13 21:40:48.045 +07:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_CartItems_ProductId` ON `CartItems` (`ProductId`);
+2025-04-13 21:40:48.052 +07:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_OrderItems_OrderId` ON `OrderItems` (`OrderId`);
+2025-04-13 21:40:48.060 +07:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_OrderItems_ProductId` ON `OrderItems` (`ProductId`);
+2025-04-13 21:40:48.067 +07:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_Orders_CustomerId` ON `Orders` (`CustomerId`);
+2025-04-13 21:40:48.076 +07:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_ProductImages_ProductId` ON `ProductImages` (`ProductId`);
+2025-04-13 21:40:48.084 +07:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_Products_CategoryId` ON `Products` (`CategoryId`);
+2025-04-13 21:40:48.091 +07:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_Reviews_CustomerId` ON `Reviews` (`CustomerId`);
+2025-04-13 21:40:48.099 +07:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX `IX_Reviews_ProductId` ON `Reviews` (`ProductId`);
+2025-04-13 21:40:48.102 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20250413144041_InitialCreate', '8.0.4');
+2025-04-13 22:56:35.943 +07:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-04-13 22:56:35.973 +07:00 [INF] User profile is available. Using 'C:\Users\tranv\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-04-13 22:56:36.033 +07:00 [INF] Now listening on: http://localhost:5008
+2025-04-13 22:56:36.034 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-13 22:56:36.034 +07:00 [INF] Hosting environment: Development
+2025-04-13 22:56:36.035 +07:00 [INF] Content root path: C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api
+2025-04-13 22:56:53.282 +07:00 [INF] Application is shutting down...
+2025-04-13 23:03:23.481 +07:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-04-13 23:03:23.510 +07:00 [INF] User profile is available. Using 'C:\Users\tranv\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-04-13 23:03:23.541 +07:00 [INF] Now listening on: http://localhost:5008
+2025-04-13 23:03:23.544 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-13 23:03:23.544 +07:00 [INF] Hosting environment: Development
+2025-04-13 23:03:23.545 +07:00 [INF] Content root path: C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api
+2025-04-13 23:03:49.649 +07:00 [INF] Application is shutting down...
+2025-04-13 23:07:49.801 +07:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-04-13 23:07:49.830 +07:00 [INF] User profile is available. Using 'C:\Users\tranv\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-04-13 23:07:49.857 +07:00 [INF] Now listening on: http://localhost:5008
+2025-04-13 23:07:49.860 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-13 23:07:49.860 +07:00 [INF] Hosting environment: Development
+2025-04-13 23:07:49.861 +07:00 [INF] Content root path: C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api
+2025-04-13 23:07:58.696 +07:00 [INF] Application is shutting down...
+2025-04-13 23:45:51.539 +07:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2025-04-13 23:45:51.700 +07:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-04-13 23:45:51.710 +07:00 [INF] User profile is available. Using 'C:\Users\tranv\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-04-13 23:45:51.739 +07:00 [INF] Now listening on: http://localhost:5008
+2025-04-13 23:45:51.740 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-13 23:45:51.741 +07:00 [INF] Hosting environment: Development
+2025-04-13 23:45:51.741 +07:00 [INF] Content root path: C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api
