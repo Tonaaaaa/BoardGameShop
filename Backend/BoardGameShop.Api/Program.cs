@@ -145,6 +145,7 @@ builder.Services.AddCors(options =>
 
 // Dependency Injection
 builder.Services.AddScoped<IUserService, UserRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryRepository>();
 
 
 // Cấu hình Cloudinary
