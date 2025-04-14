@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace BoardGameShop.Api.Middleware
 {
@@ -34,7 +35,7 @@ namespace BoardGameShop.Api.Middleware
                 return;
             }
 
-            var userRole = context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+            var userRole = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value; // Sửa từ "role" thành ClaimTypes.Role
             var roleAttribute = endpoint?.Metadata?.GetMetadata<AuthorizeRoleAttribute>();
             if (roleAttribute != null && !roleAttribute.Roles.Contains(userRole))
             {
