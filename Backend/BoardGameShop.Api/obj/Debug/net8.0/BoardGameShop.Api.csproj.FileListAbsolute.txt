@@ -136,3 +136,4 @@ C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api\bin\Debug\net8.0\
 C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api\bin\Debug\net8.0\.env
+C:\Users\tranv\Desktop\BoardGameShop\Backend\BoardGameShop.Api\bin\Debug\net8.0\BCrypt.Net-Next.dll

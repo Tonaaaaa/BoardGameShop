@@ -10,9 +10,8 @@ using Serilog;
 using BoardGameShop.Api.Middleware;
 using DotNetEnv;
 using BoardGameShop.Api.Extensions;
-
-// Thêm using cho AutoMapper
 using AutoMapper;
+using BoardGameShop.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +33,7 @@ catch (Exception ex)
     throw;
 }
 
-// Kiểm tra biến môi trường (bao gồm cả JWT)
+// Kiểm tra biến môi trường (bao gồm cả JWT và Cloudinary)
 var dbHost = Environment.GetEnvironmentVariable("DB_MYSQL_HOST");
 var dbPort = Environment.GetEnvironmentVariable("DB_MYSQL_PORT");
 var dbUser = Environment.GetEnvironmentVariable("DB_MYSQL_USER");
@@ -43,6 +42,9 @@ var dbName = Environment.GetEnvironmentVariable("DB_MYSQL_NAME");
 var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
 var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var cloudinaryCloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME");
+var cloudinaryApiKey = Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY");
+var cloudinaryApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET");
 
 if (string.IsNullOrWhiteSpace(dbHost)) throw new Exception("DB_MYSQL_HOST không được thiết lập.");
 if (string.IsNullOrWhiteSpace(dbPort)) throw new Exception("DB_MYSQL_PORT không được thiết lập.");
@@ -52,9 +54,13 @@ if (string.IsNullOrWhiteSpace(dbName)) throw new Exception("DB_MYSQL_NAME không
 if (string.IsNullOrWhiteSpace(jwtIssuer)) throw new Exception("JWT_ISSUER không được thiết lập.");
 if (string.IsNullOrWhiteSpace(jwtAudience)) throw new Exception("JWT_AUDIENCE không được thiết lập.");
 if (string.IsNullOrWhiteSpace(jwtKey)) throw new Exception("JWT_KEY không được thiết lập.");
+if (string.IsNullOrWhiteSpace(cloudinaryCloudName)) throw new Exception("CLOUDINARY_CLOUD_NAME không được thiết lập.");
+if (string.IsNullOrWhiteSpace(cloudinaryApiKey)) throw new Exception("CLOUDINARY_API_KEY không được thiết lập.");
+if (string.IsNullOrWhiteSpace(cloudinaryApiSecret)) throw new Exception("CLOUDINARY_API_SECRET không được thiết lập.");
 
 Console.WriteLine($"DB_HOST: {dbHost}, DB_PORT: {dbPort}, DB_USER: {dbUser}, DB_NAME: {dbName}");
 Console.WriteLine($"JWT_ISSUER: {jwtIssuer}, JWT_AUDIENCE: {jwtAudience}");
+Console.WriteLine($"CLOUDINARY_CLOUD_NAME: {cloudinaryCloudName}");
 
 // Logging
 Log.Logger = new LoggerConfiguration()
@@ -65,7 +71,8 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -109,9 +116,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
            .EnableSensitiveDataLogging()
            .EnableDetailedErrors());
 
-// FluentValidation
-builder.Services.AddFluentValidationAutoValidation();
-
 // JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -140,9 +144,16 @@ builder.Services.AddCors(options =>
 });
 
 // Dependency Injection
-builder.Services.AddScoped<IProductService, ProductRepository>();
-builder.Services.AddScoped<ICloudinaryService, CloudinaryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryRepository>();
+builder.Services.AddScoped<IUserService, UserRepository>();
+
+
+// Cấu hình Cloudinary
+builder.Services.Configure<CloudinarySettings>(options =>
+{
+    options.CloudName = cloudinaryCloudName;
+    options.ApiKey = cloudinaryApiKey;
+    options.ApiSecret = cloudinaryApiSecret;
+});
 
 var app = builder.Build();
 
@@ -173,13 +184,13 @@ using (var scope = app.Services.CreateScope())
 
 // Middleware pipeline
 app.UseSerilogRequestLogging();
-// app.UseMiddleware<ExceptionMiddleware>(); // Tạm comment để debug
-// app.UseMiddleware<LoggingMiddleware>();  // Tạm comment để debug
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAuthorizationMiddleware();
 
-// Configure Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

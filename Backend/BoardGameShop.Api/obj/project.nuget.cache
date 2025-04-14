@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "TgjDlw3nblc=",
+  "dgSpecHash": "74uTdvSNg+w=",
   "success": true,
   "projectFilePath": "C:\\Users\\tranv\\Desktop\\BoardGameShop\\Backend\\BoardGameShop.Api\\BoardGameShop.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\tranv\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\tranv\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "C:\\Users\\tranv\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\tranv\\.nuget\\packages\\cloudinarydotnet\\1.27.5\\cloudinarydotnet.1.27.5.nupkg.sha512",
     "C:\\Users\\tranv\\.nuget\\packages\\dotnetenv\\3.1.1\\dotnetenv.3.1.1.nupkg.sha512",
     "C:\\Users\\tranv\\.nuget\\packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
