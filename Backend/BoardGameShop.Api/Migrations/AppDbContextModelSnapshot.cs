@@ -43,7 +43,11 @@ namespace BoardGameShop.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SessionId")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -53,6 +57,8 @@ namespace BoardGameShop.Api.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SessionId");
 
                     b.ToTable("CartItems");
                 });
@@ -68,22 +74,32 @@ namespace BoardGameShop.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Slug")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -97,12 +113,17 @@ namespace BoardGameShop.Api.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("CurrentUses")
                         .HasColumnType("int");
 
                     b.Property<string>("DiscountType")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("DiscountValue")
@@ -117,13 +138,22 @@ namespace BoardGameShop.Api.Migrations
                     b.Property<int?>("MaxUses")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MaxUsesPerUser")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("MinOrderAmount")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.ToTable("Coupons");
                 });
@@ -137,26 +167,26 @@ namespace BoardGameShop.Api.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CouponCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CustomerAddress")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("CustomerPhone")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(65,30)");
@@ -164,13 +194,28 @@ namespace BoardGameShop.Api.Migrations
                     b.Property<decimal>("FinalAmount")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OrderCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("OrderStatus")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("PaymentMethod")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(65,30)");
@@ -180,7 +225,14 @@ namespace BoardGameShop.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedAt");
+
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderCode")
+                        .IsUnique();
+
+                    b.HasIndex("OrderStatus");
 
                     b.ToTable("Orders");
                 });
@@ -193,6 +245,13 @@ namespace BoardGameShop.Api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("DiscountApplied")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -200,6 +259,7 @@ namespace BoardGameShop.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProductName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("Quantity")
@@ -228,6 +288,9 @@ namespace BoardGameShop.Api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AveragePlayTime")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -235,27 +298,44 @@ namespace BoardGameShop.Api.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Designer")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DifficultyLevel")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ImageUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("MaxPlayers")
+                        .HasColumnType("int");
+
                     b.Property<string>("MetaDescription")
-                        .HasMaxLength(160)
-                        .HasColumnType("varchar(160)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("MetaTitle")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("MinAge")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinPlayers")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<decimal?>("OriginalPrice")
                         .HasColumnType("decimal(65,30)");
@@ -263,12 +343,23 @@ namespace BoardGameShop.Api.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<string>("Publisher")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("ReleaseYear")
+                        .HasColumnType("int");
+
                     b.Property<string>("Slug")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Themes")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -276,6 +367,11 @@ namespace BoardGameShop.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Products");
                 });
@@ -288,10 +384,18 @@ namespace BoardGameShop.Api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AltText")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsMain")
@@ -316,6 +420,7 @@ namespace BoardGameShop.Api.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comment")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
@@ -325,7 +430,11 @@ namespace BoardGameShop.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerName")
+                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("HelpfulVotes")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("tinyint(1)");
@@ -336,9 +445,18 @@ namespace BoardGameShop.Api.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<string>("Reply")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("IsApproved");
 
                     b.HasIndex("ProductId");
 
@@ -354,36 +472,70 @@ namespace BoardGameShop.Api.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("FavoriteGames")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("FullName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ResetPasswordTokenExpiry")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Role")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Username")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("VerificationToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -403,6 +555,15 @@ namespace BoardGameShop.Api.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("BoardGameShop.Api.Entities.Category", b =>
+                {
+                    b.HasOne("BoardGameShop.Api.Entities.Category", "Parent")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("BoardGameShop.Api.Entities.Order", b =>
@@ -475,6 +636,8 @@ namespace BoardGameShop.Api.Migrations
             modelBuilder.Entity("BoardGameShop.Api.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("BoardGameShop.Api.Entities.Order", b =>
